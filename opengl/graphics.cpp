@@ -15,7 +15,7 @@ Graphics::Graphics()
 {
     objectShader = new ShaderLoader();
 
-    camera = new Camera(vec3(5.0f, 0.0f, -15.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f), 1920, 1080, 0.5); //make the camera (position, look direction, up vector, window width, window height, speed)
+    camera = new Camera(vec3(5.0f, 10.0f, -15.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f), 1920, 1080, 0.5); //make the camera (position, look direction, up vector, window width, window height, speed)
 }
 
 string Graphics::path(string p)
@@ -151,11 +151,14 @@ void Graphics::init()
     object = new GameObject(); //create model
     
     object->createGraphicsObject(path("animated_models/Caterpillar/caterpillar.fbx")); //get data from file
-    //object->createGraphicsObject(path("static_models/Oilbarrel/barrel.obj")); //get data from file
     
     object->applyLocalRotation(180, vec3(1, 0, 0)); //there are some problems with loading fbx files. Models could be rotated or scaled. So we rotate it to the normal state
+    object->applyLocalPosition(vec3(0, 2, 0));
 
     object->playAnimation(new Animation("MAIN", vec2(0, 245), 0.34, 10, true)); //forcing our model to play the animation (name, frames, speed, priority, loop)
+        
+    floor = new GameObject();
+    floor->createGraphicsObject(path("static_models/Floor/floor.obj"));
 }
 
 void Graphics::play()
@@ -188,6 +191,7 @@ void Graphics::play()
 
         
         object->render(objectShader); //render our model
+        floor->render(objectShader);
         
         glfwSwapBuffers(scene); //swap back and front buffers
     }
@@ -205,4 +209,5 @@ Graphics::~Graphics()
     delete camera;
 
     delete object;
+    delete floor;
 }

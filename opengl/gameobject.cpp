@@ -32,19 +32,34 @@ void GameObject::stopAnimation()
 
 void GameObject::applyLocalRotation(float angle, vec3 axis)
 {
-    vec3 sc; //scaling
-    quat rot; //rotation
-    vec3 tran; //translation
-    vec3 skew; //skew
-    vec4 proj; //projection
+    vec3 sc;
+    quat rot;
+    vec3 tran;
+    vec3 skew;
+    vec4 perspective;
 
-    decompose(localTransform, sc, rot, tran, skew, proj); //decomposing localTransform into parts to tweak
+    decompose(localTransform, sc, rot, tran, skew, perspective);
 
-    //constructing back the tweaked localTransform
-    localTransform = mat4(1.0); 
-    localTransform *= scale(sc);
+    localTransform = mat4(1.0);
     localTransform *= translate(tran);
-    localTransform *= rotate(radians(angle), axis);
+    localTransform *= scale(sc);
+    localTransform *= rotate(radians(angle), axis) * mat4_cast(conjugate(rot));
+}
+
+void GameObject::applyLocalPosition(vec3 translation)
+{
+    vec3 sc;
+    quat rot;
+    vec3 tran;
+    vec3 skew;
+    vec4 perspective;
+
+    decompose(localTransform, sc, rot, tran, skew, perspective);
+
+    localTransform = mat4(1.0);
+    localTransform *= translate(translation) * translate(tran);
+    localTransform *= scale(sc);
+    localTransform *= mat4_cast(conjugate(rot));
 }
 
 void GameObject::render(ShaderLoader* shader)

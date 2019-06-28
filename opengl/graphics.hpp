@@ -30,6 +30,7 @@ class Graphics //our main class
         GLFWwindow *scene; //our window
    
         GameObject *object; //our suspect model
+        GameObject *floor;
 
         mat4 view; //view/camera matrix 
         mat4 projection; //projection matrix

@@ -30,6 +30,7 @@ class GameObject
 
         //here we can adjust the model. Often loaded models are strangely rotated or scaled, we can manualy tweak them here
         void applyLocalRotation(float angle, vec3 axis); 
+        void applyLocalPosition(vec3 translation); 
         //void setLocalScale(vec3 sc);
         //void setLocalPosition(vec3 pos);
 
