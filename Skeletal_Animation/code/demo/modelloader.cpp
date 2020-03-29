@@ -42,7 +42,7 @@ void ModelLoader::processNode(aiNode *node)
 {
     nodes.push_back(node);
 
-    for (int j = 0; j < node->mNumChildren; j++) //recursive loop through each child to fill the vector
+    for (size_t j = 0; j < node->mNumChildren; j++) //recursive loop through each child to fill the vector
     {
         processNode(node->mChildren[j]);
     }
@@ -57,7 +57,7 @@ void ModelLoader::processNodeAnim()
 
     //cout << scene->mNumAnimations << endl;
 
-    for (int i = 0; i < scene->mAnimations[0]->mNumChannels; i++) //loop through the animation to get each bone animation data
+    for (size_t i = 0; i < scene->mAnimations[0]->mNumChannels; i++) //loop through the animation to get each bone animation data
     {
         nodesAnim.push_back(scene->mAnimations[0]->mChannels[i]);
     }
@@ -65,9 +65,9 @@ void ModelLoader::processNodeAnim()
 
 void ModelLoader::processBone()
 {
-    for (int i = 0; i < scene->mNumMeshes; i++) //loop through each mesh of the model
+    for (size_t i = 0; i < scene->mNumMeshes; i++) //loop through each mesh of the model
     {
-        for (int j = 0; j < scene->mMeshes[i]->mNumBones; j++) //loop through each bone which is connected to that mesh
+        for (size_t j = 0; j < scene->mMeshes[i]->mNumBones; j++) //loop through each bone which is connected to that mesh
         {
             string boneName = scene->mMeshes[i]->mBones[j]->mName.data; //get bone`s name
             mat4 boneOffset = aiMatrix4x4ToGlm(scene->mMeshes[i]->mBones[j]->mOffsetMatrix); //get bone`s offset matrix. This is the matrix which transforms from the mesh space to the bone space
@@ -86,7 +86,7 @@ void ModelLoader::processBone()
         }
     }
 
-    for (int i = 0; i < bones.size(); i++) //here we are looking for the parent bone for our bones
+    for (size_t i = 0; i < bones.size(); i++) //here we are looking for the parent bone for our bones
     {
         string parentName = bones[i]->node->mParent->mName.data; //get the bone parent name. For each aiNode assimp keeps the parent pointer, as the bone has the same name as it`s aiNode we can do like that
 
@@ -106,13 +106,13 @@ void ModelLoader::processBone()
 void ModelLoader::processMeshes(aiNode *node)
 {
     //we start with the root node
-    for (int i = 0; i < node->mNumMeshes; i++) //loop through each mesh this node has
+    for (size_t i = 0; i < node->mNumMeshes; i++) //loop through each mesh this node has
     {
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]]; //get the mesh from it`s index
         meshes.push_back(processMesh(mesh)); //here we call another function to extract the data and then push_back the complete mesh
     }
 
-    for (int j = 0; j < node->mNumChildren; j++) //recursive loop through the each node
+    for (size_t j = 0; j < node->mNumChildren; j++) //recursive loop through the each node
     {
         processMeshes(node->mChildren[j]);
     }
@@ -124,7 +124,7 @@ Mesh* ModelLoader::processMesh(aiMesh *mesh)
     vector < unsigned int > indices; //vertex indices for EBO
     vector < Texture > textures; //textures (id, type, path)
 
-    for (int i = 0; i < mesh->mNumVertices; i++) //loop through each vertex in the mesh
+    for (size_t i = 0; i < mesh->mNumVertices; i++) //loop through each vertex in the mesh
     {
         Vertex vertex;
         vec3 helpVec3;
@@ -162,11 +162,11 @@ Mesh* ModelLoader::processMesh(aiMesh *mesh)
 
     //we have loaded the vertex data, its time for the bone data
 
-    for (int i = 0; i < mesh->mNumBones; i++) //loop through each bone that mesh has
+    for (size_t i = 0; i < mesh->mNumBones; i++) //loop through each bone that mesh has
     {
         aiBone* bone = mesh->mBones[i];
 
-        for (int j = 0; j < bone->mNumWeights; j++) //loop through the each bone`s vertex it carries in that mesh
+        for (size_t j = 0; j < bone->mNumWeights; j++) //loop through the each bone`s vertex it carries in that mesh
         {
             aiVertexWeight vertexWeight = bone->mWeights[j]; //get the id and the weight of the carried vertex
 
@@ -194,12 +194,12 @@ Mesh* ModelLoader::processMesh(aiMesh *mesh)
 
     //we have loaded everything for the vertices
 
-    for (int i = 0; i < mesh->mNumFaces; i++) //loop through the mesh`s planes/faces
+    for (size_t i = 0; i < mesh->mNumFaces; i++) //loop through the mesh`s planes/faces
     {
         aiFace face = mesh->mFaces[i];
 
         //if face.mNumIndices == 3 we are loading triangles
-        for (int j = 0; j < face.mNumIndices; j++)
+        for (size_t j = 0; j < face.mNumIndices; j++)
         {
             indices.push_back(face.mIndices[j]);
         }
@@ -222,7 +222,7 @@ vector < Texture > ModelLoader::loadMaterialTextures(aiMaterial *mat, aiTextureT
 {
     vector < Texture > textures; //vector for the particular texture type
 
-    for (int i = 0; i < mat->GetTextureCount(type); i++) //loop through each typed texture
+    for (size_t i = 0; i < mat->GetTextureCount(type); i++) //loop through each typed texture
     {
         aiString helpStr;
 
@@ -230,7 +230,7 @@ vector < Texture > ModelLoader::loadMaterialTextures(aiMaterial *mat, aiTextureT
 
         bool skip = false;
 
-        for (int j = 0; j < textures_loaded.size(); j++) //loop through already loaded textures
+        for (size_t j = 0; j < textures_loaded.size(); j++) //loop through already loaded textures
         {
             if (strcmp(textures_loaded[j].path.data(), helpStr.C_Str()) == 0) //if we have already loaded it
             {
@@ -297,7 +297,7 @@ unsigned int ModelLoader::textureFromFile(const char *path)
 
 Bone* ModelLoader::findBone(string name)
 {
-    for (int i = 0; i < bones.size(); i++) //just loop through the array of bones
+    for (size_t i = 0; i < bones.size(); i++) //just loop through the array of bones
     {
         if (bones[i]->name == name) //if name mathes the name
         {
@@ -310,7 +310,7 @@ Bone* ModelLoader::findBone(string name)
 
 int ModelLoader::findBoneId(string name)
 {
-    for (int i = 0; i < bones.size(); i++) //just loop through the array of bones
+    for (size_t i = 0; i < bones.size(); i++) //just loop through the array of bones
     {
         if (bones[i]->name == name) //if name mathes the name
         {
@@ -323,7 +323,7 @@ int ModelLoader::findBoneId(string name)
 
 aiNode* ModelLoader::findAiNode(string name)
 {
-    for (int i = 0; i < nodes.size(); i++) //loop through the array of nodes
+    for (size_t i = 0; i < nodes.size(); i++) //loop through the array of nodes
     {
         if (nodes[i]->mName.data == name) //if node name mathes the name
         {
@@ -336,7 +336,7 @@ aiNode* ModelLoader::findAiNode(string name)
 
 aiNodeAnim* ModelLoader::findAiNodeAnim(string name)
 {
-    for (int i = 0; i < nodesAnim.size(); i++) //loop through the array of animation nodes
+    for (size_t i = 0; i < nodesAnim.size(); i++) //loop through the array of animation nodes
     {
         if (nodesAnim[i]->mNodeName.data == name) //if animation node name matches the name 
         {

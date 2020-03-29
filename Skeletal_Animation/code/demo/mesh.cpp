@@ -56,7 +56,7 @@ void Mesh::draw(ShaderLoader *shader)
     unsigned int diffuseNR = 1; //amount of diffuse textures
     unsigned int specularNR = 1; //amount of specular textures
 
-    for (int i = 0; i < textures.size(); i++) //loop through textures
+    for (size_t i = 0; i < textures.size(); i++) //loop through textures
     {
         glActiveTexture(GL_TEXTURE0 + i); //set the texture active
 

@@ -113,7 +113,7 @@ quat Bone::calcInterpolatedRotation(float time)
 
 int Bone::findPosition(float time)
 {
-    for (int i = 0; i < nodeAnim->mNumPositionKeys - 1; i++) //loop through each position frame
+    for (size_t i = 0; i < nodeAnim->mNumPositionKeys - 1; i++) //loop through each position frame
     {
         if (time < nodeAnim->mPositionKeys[i + 1].mTime) //if the given time is less than in a keyframe
         {
@@ -126,7 +126,7 @@ int Bone::findPosition(float time)
 
 int Bone::findRotation(float time)
 {
-    for (int i = 0; i < nodeAnim->mNumRotationKeys - 1; i++) //loop through each rotation keyframe
+    for (size_t i = 0; i < nodeAnim->mNumRotationKeys - 1; i++) //loop through each rotation keyframe
     {
         if (time < nodeAnim->mRotationKeys[i + 1].mTime) //if the given time is less then in a keyframe
         {

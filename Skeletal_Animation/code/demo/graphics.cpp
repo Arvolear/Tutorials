@@ -143,7 +143,7 @@ void Graphics::init()
 
 
 
-    objectShader->loadShaders(path("./opengl/vertexShader.glsl"), path("./opengl/fragmentShader.glsl")); //loading object shader. There we render our model
+    objectShader->loadShaders(path("code/shaders/vertexShader.glsl"), path("code/shaders/fragmentShader.glsl")); //loading object shader. There we render our model
 
     projection = perspective(45.0f, 1.77778f, 0.1f, 100.0f); //create our projection
     
