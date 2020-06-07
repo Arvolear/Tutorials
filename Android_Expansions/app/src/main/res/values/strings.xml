@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Expansions Tutorial</string>
+
+    <string name="font_path">fonts/Righteous-Regular.ttf</string>
+</resources>
