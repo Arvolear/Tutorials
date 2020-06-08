@@ -25,8 +25,8 @@ public class DownloadBar extends FrameLayout
 
     private String path;
 
-    private AssetsLoader assetsLoader;
     private TreeMap<Integer, Bitmap> tree;
+    private AssetsLoader assetsLoader;
 
     private double rawProgress;
     private int currentProgress;
@@ -36,6 +36,11 @@ public class DownloadBar extends FrameLayout
 
     private ClipDrawable barCurrent;
 
+    /* Simple progress bar class.
+     * The class uses ClipDrawable to achieve beautiful result
+     * path - path to dir with progress bar images
+     * rawProgress - progress in range [0.0; 1.0]
+     */
     public DownloadBar(AppCompatActivity activity, String path, double rawProgress)
     {
         super(activity);
@@ -50,19 +55,22 @@ public class DownloadBar extends FrameLayout
         assetsLoader = new AssetsLoader(activity, tree);
         assetsLoader.setLoadFromLocalAssets(true);
 
+        /* ClipDrawable only accepts values from range [0; 10000] */
         this.rawProgress = Math.min(rawProgress, 1.0f);
-        this.currentProgress = (int) ((rawProgress - (int) rawProgress) * 10000.0);
+        this.currentProgress = (int) (rawProgress * 10000.0);
 
         init();
     }
 
     private void init()
     {
+        /* Load two images from local "assets" folder */
         assetsLoader.loadBitmapFromAssets(0, path + "/0.png", true);
         assetsLoader.loadBitmapFromAssets(1, path + "/1.png", true);
         barBoundsBitmap = tree.get(0);
         barProgressBitmap = tree.get(1);
 
+        /* Here we configure ImageView elements */
         progressBarLayout.post(new Runnable()
         {
             @Override
@@ -75,9 +83,10 @@ public class DownloadBar extends FrameLayout
                 barBounds.setLayoutParams(LP0);
                 barBounds.setImageBitmap(barBoundsBitmap);
                 barBounds.setPadding(progressBarLayout.getWidth() / 8, 0, progressBarLayout.getWidth() / 8, 0);
-                barBounds.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                barBounds.setScaleType(ImageView.ScaleType.CENTER_INSIDE); // Scale to fit
                 barBounds.setAdjustViewBounds(true);
 
+                /* Configure the progress bar */
                 barCurrent = new ClipDrawable(new BitmapDrawable(activity.getResources(), barProgressBitmap), Gravity.START, ClipDrawable.HORIZONTAL);
                 barCurrent.setLevel(currentProgress);
 
@@ -85,17 +94,19 @@ public class DownloadBar extends FrameLayout
                 barProgress.setLayoutParams(LP0);
                 barProgress.setImageDrawable(barCurrent);
                 barProgress.setPadding(progressBarLayout.getWidth() / 8, 0, progressBarLayout.getWidth() / 8, 0);
-                barProgress.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                barProgress.setScaleType(ImageView.ScaleType.CENTER_INSIDE); // Scale to fit
                 barProgress.setAdjustViewBounds(true);
 
                 addView(barBounds);
                 addView(barProgress);
 
+                /* Set current progress (clip image in the specified place) */
                 barCurrent.setLevel(currentProgress);
             }
         });
     }
 
+    /* Simply updates current progress */
     public void setProgress(double rawProgress)
     {
         this.rawProgress = Math.min(rawProgress, 1.0f);

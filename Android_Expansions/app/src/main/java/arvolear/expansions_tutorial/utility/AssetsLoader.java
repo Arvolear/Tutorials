@@ -28,6 +28,7 @@ public class AssetsLoader
 
     private TreeMap < Integer, Bitmap > tree;
 
+    /* Constructor accepts external TreeMap to store loaded bitmaps in */
     public AssetsLoader(AppCompatActivity activity, TreeMap < Integer, Bitmap > tree)
     {
         this.activity = activity;
@@ -46,7 +47,11 @@ public class AssetsLoader
         }
     }
 
-    /* Function to asynchronously load an image from assets */
+    /* Function to asynchronously load an image from assets
+     * index - output bitmap index in the TreeMap
+     * path - path to the asset (assets folder is a root dir)
+     * join - whether we need to wait for the loading to finish
+     */
     public void loadBitmapFromAssets(final int index, final String path, boolean join)
     {
         Thread loader = new Thread(new Runnable()
@@ -78,17 +83,22 @@ public class AssetsLoader
                         tree.put(index, newBitmap);
                     }
                 }
-                catch (Exception ex) { }
+                catch (Exception ex)
+                {
+                }
                 finally
                 {
                     try
                     {
                         if (stream != null)
                         {
+                            /* Closing the stream */
                             stream.close();
                         }
                     }
-                    catch (Exception ex) { }
+                    catch (Exception ex)
+                    {
+                    }
                 }
             }
         });
@@ -101,7 +111,9 @@ public class AssetsLoader
             {
                 loader.join();
             }
-            catch (Exception ex) {}
+            catch (Exception ex)
+            {
+            }
         }
     }
 

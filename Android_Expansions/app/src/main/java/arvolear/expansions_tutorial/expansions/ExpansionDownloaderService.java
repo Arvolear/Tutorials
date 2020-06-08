@@ -8,20 +8,27 @@ public class ExpansionDownloaderService extends DownloaderService
 
     private static final byte[] SALT = new byte[]
             {
-            }; // TODO fill in with values [-128; 127]
+            }; // TODO fill in with random values [-128; 127]
 
+    /* The public key goes from your Android Market publisher account.
+     * You may find one on Google console -> your app -> development tools
+     */
     @Override
     public String getPublicKey()
     {
         return BASE64_PUBLIC_KEY;
     }
 
+    /* The salt has to be unique across other applications,
+     * please generate it carefully
+     */
     @Override
     public byte[] getSALT()
     {
         return SALT;
     }
 
+    /* Setting up the alarm receiver */
     @Override
     public String getAlarmReceiverClassName()
     {

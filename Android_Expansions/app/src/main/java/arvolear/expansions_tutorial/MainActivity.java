@@ -42,14 +42,14 @@ public class MainActivity extends AppCompatActivity
         TreeMap < Integer, Bitmap > tree = new TreeMap<>();
         AssetsLoader loader = new AssetsLoader(this, tree);
 
-        loader.loadBitmapFromAssets(0, "assets/textures/0.jpg", true);
+        loader.loadBitmapFromAssets(0, "assets/textures/0.png", true);
 
         ImageView background = findViewById(R.id.fromExpansionsImage);
         background.setImageBitmap(tree.get(0));
     }
 
     /* Request permissions callback function. It is called from expansionsController
-     * when the user accepts "read external storage" permission request
+     * when the user accepts or rejects "read external storage" permission request
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        /* Important note. Here we set activity_main layout */
         setContentView(R.layout.activity_main);
 
         /* Creating new expansions controller. It is a class which
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart()
     {
+        /* Reconnecting downloading client */
         expansionController.start();
         super.onStart();
     }
@@ -118,7 +120,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onWindowFocusChanged(hasFocus);
 
-        /* Hide nav bar when the window gained focus */
+        /* Hide nav bar if the window gained focus */
         if (hasFocus)
         {
             hideNavigationBar();
@@ -128,6 +130,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop()
     {
+        /* Disconnecting downloading client */
         expansionController.stop();
         super.onStop();
     }

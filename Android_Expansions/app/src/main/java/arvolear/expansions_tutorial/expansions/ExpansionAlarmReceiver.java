@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.google.android.vending.expansion.downloader.DownloaderClientMarshaller;
 
+/* This class helps start downloading expansions */
 public class ExpansionAlarmReceiver extends BroadcastReceiver
 {
     @Override
@@ -17,6 +18,7 @@ public class ExpansionAlarmReceiver extends BroadcastReceiver
         }
         catch (Exception ex)
         {
+            ex.printStackTrace();
         }
     }
 }

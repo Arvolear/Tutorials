@@ -24,19 +24,20 @@ import java.io.File;
 import arvolear.expansions_tutorial.MainActivity;
 import arvolear.expansions_tutorial.R;
 
+/* This class fully embraces expansions functionality */
 public class ExpansionController implements View.OnClickListener, IDownloaderClient
 {
     private AppCompatActivity activity;
 
-    public static final boolean EXP_IS_MAIN = true; // TODO change?
-    public static final int EXP_VERSION = 1; // TODO change?
-    public static final long EXP_SIZE = 0; // TODO change?
+    public static final boolean EXP_IS_MAIN = true;
+    public static final int EXP_VERSION = 1; // TODO change
+    public static final long EXP_SIZE = 57199; // TODO change
 
     public static final String PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
-    public static final int PERMISSION_CODE = 1;
+    public static final int PERMISSION_CODE = 1; // This may be any number you want
 
-    private boolean statePaused = false;
-    private boolean cellularShown = false;
+    private boolean statePaused = false; // We are running
+    private boolean cellularShown = false; // Downloading over wi-fi, cellular message is hidden
     private int state;
 
     private IStub downloaderClientStub;
@@ -49,22 +50,25 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         this.activity = activity;
     }
 
+    /* This function is called when we need to start downloading expansions,
+     * it prepares downloading UI
+     */
     private void initUI()
     {
-        /* Create downloader */
+        /* Create downloader client */
         downloaderClientStub = DownloaderClientMarshaller.CreateStub(this, ExpansionDownloaderService.class);
 
-        /* Set new view (downloading screen) */
+        /* Set new layout (downloading screen) */
         activity.setContentView(R.layout.download);
 
-        /* initialize new downloading screen */
+        /* initialize downloading screen */
         expansionPage = new ExpansionPage(activity, this);
     }
 
-    /* Simple "read" permission checker */
+    /* Simple "external storage read" permission checker */
     public boolean checkPermission()
     {
-        /* Permission is not available */
+        /* If permission is not available */
         if (ContextCompat.checkSelfPermission(activity, PERMISSION) == PackageManager.PERMISSION_DENIED)
         {
             /* Get expansion file */
@@ -89,14 +93,17 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
     {
         File packageFile = new File(activity.getObbDir() + activity.getPackageName());
 
+        /* If parental dir does not exist. Also checking for the "obb" directory */
         if (!packageFile.exists())
         {
-            /* Create dir if it doesn't exist */
+            /* Create the dir */
             packageFile.mkdirs();
         }
     }
 
-    /* Simply check the expansion file availability */
+    /* Simply check the expansion file availability.
+     * You might also want to check the patch expansion file here
+     */
     private boolean expansionFilesDelivered()
     {
         /* Firstly check existence of expansion parental directory */
@@ -105,19 +112,22 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         /* Get expansion name from its type and version */
         String expName = Helpers.getExpansionAPKFileName(activity, EXP_IS_MAIN, EXP_VERSION);
 
-        /* Check whether file with exact name and size exists and delete on mismatch */
+        /* Check whether file with exact name and size exists or delete on mismatch */
         return Helpers.doesFileExist(activity, expName, EXP_SIZE, true);
     }
 
     /* This function is called from MainActivity onCreate() method.
      * It checks whether we need to start downloading the expansions or
-     * the expansions are already here.
+     * the expansions are already here
      */
     public boolean downloadContent()
     {
         /* Check expansion delivery */
         if (!expansionFilesDelivered())
         {
+            /* Pending intent is used to open this activity from notification.
+             * Especially when the app is closed and downloading is complete
+             */
             Intent notifierIntent = new Intent(activity, MainActivity.class);
             notifierIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -131,6 +141,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
                 /* if response code is not NO_DOWNLOAD_REQUIRED, we must download the expansion */
                 if (startResult != DownloaderClientMarshaller.NO_DOWNLOAD_REQUIRED)
                 {
+                    /* Prepare user interface */
                     initUI();
                     return true; // Yes, we started downloading the expansion
                 }
@@ -147,7 +158,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
     /* Function that is called when expansion if fully downloaded.
      * It simply calls the same activity, popping current one from the stack.
      *
-     * Because expansions are now downloaded, we will end up launching the game
+     * Because expansions are now downloaded, we won't end up here the second time
      */
     private void launchTheGame()
     {
@@ -165,10 +176,11 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
                 {
                 }
 
-                Intent menuIntent = new Intent(activity, MainActivity.class);
+                /* Intent that calls MainActivity */
+                Intent launchIntent = new Intent(activity, MainActivity.class);
 
                 /* Calling the same activity */
-                activity.startActivity(menuIntent);
+                activity.startActivity(launchIntent);
                 activity.overridePendingTransition(R.anim.expansions_alpha_up, R.anim.expansions_alpha_down);
 
                 /* Popping current activity from the activity stack */
@@ -185,6 +197,8 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         if (downloaderClientStub != null)
         {
             downloaderClientStub.connect(activity);
+
+            /* UI update */
             expansionPage.start();
         }
     }
@@ -195,6 +209,8 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         if (downloaderClientStub != null)
         {
             downloaderClientStub.disconnect(activity);
+
+            /* UI update */
             expansionPage.stop();
         }
     }
@@ -244,7 +260,9 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         }
     }
 
-    /* Must override */
+    /* Must override. This is how the service knows which changes
+     * it has to show back to the user
+     */
     @Override
     public void onServiceConnected(Messenger m)
     {
@@ -306,11 +324,11 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         state = stateId;
         statePaused = paused;
 
-        /* If cellular message show changes */
+        /* If cellular message state changes */
         if (cellularShown != showCellMessage)
         {
             cellularShown = showCellMessage;
-            /* Either show cellular message or hide */
+            /* Either show cellular message or hide it */
             expansionPage.triggerCellular(cellularShown);
         }
 
@@ -323,7 +341,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
     /* Function is called when downloading is in progress.
 
      * Note that we have to manually set 100% progress because
-     * this callback function is not called on 100%
+     * this callback function is not called when 100% is reached
      */
     @Override
     public void onDownloadProgress(DownloadProgressInfo progress)
