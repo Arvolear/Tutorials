@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
@@ -19,6 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+<!--        Needed for android 9+ to use apache (downloader library) -->
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false">

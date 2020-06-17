@@ -4,14 +4,14 @@ import com.google.android.vending.expansion.downloader.impl.DownloaderService;
 
 public class ExpansionDownloaderService extends DownloaderService
 {
-    private static final String BASE64_PUBLIC_KEY = "YOUR KEY GOES HERE"; // TODO change
+    private static final String BASE64_PUBLIC_KEY = "YOUR KEY GOES HERE"; // TODO must change with our own key
 
     private static final byte[] SALT = new byte[]
             {
-            }; // TODO fill in with random values [-128; 127]
+            }; // TODO fill this in with random values [-128; 127]
 
     /* The public key goes from your Android Market publisher account.
-     * You may find one on Google console -> your app -> development tools
+     * You may find one on Google Console -> your app -> development tools
      */
     @Override
     public String getPublicKey()

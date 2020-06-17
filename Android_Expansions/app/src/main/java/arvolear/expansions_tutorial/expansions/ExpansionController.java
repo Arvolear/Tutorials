@@ -30,11 +30,11 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
     private AppCompatActivity activity;
 
     public static final boolean EXP_IS_MAIN = true;
-    public static final int EXP_VERSION = 1; // TODO change
-    public static final long EXP_SIZE = 57199; // TODO change
+    public static final int EXP_VERSION = 1; // TODO change for your needs
+    public static final long EXP_SIZE = 57199; // TODO change for your needs
 
     public static final String PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
-    public static final int PERMISSION_CODE = 1; // This may be any number you want
+    public static final int PERMISSION_CODE = 1; // This may be any number you wish
 
     private boolean statePaused = false; // We are running
     private boolean cellularShown = false; // Downloading over wi-fi, cellular message is hidden
@@ -43,7 +43,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
     private IStub downloaderClientStub;
     private IDownloaderService remoteService;
 
-    private ExpansionPage expansionPage;
+    private ExpansionPage expansionPage; // UI holder
 
     public ExpansionController(AppCompatActivity activity)
     {
@@ -51,7 +51,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
     }
 
     /* This function is called when we need to start downloading expansions,
-     * it prepares downloading UI
+     * it prepares the downloading UI
      */
     private void initUI()
     {
@@ -74,10 +74,10 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
             /* Get expansion file */
             File obb = new File(Helpers.getExpansionAPKFileName(activity, EXP_IS_MAIN, EXP_VERSION));
 
-            /* Try to read the expansion file */
+            /* Trying to read the expansion file */
             if (!obb.canRead())
             {
-                /* Request permission on fail */
+                /* Request permission if failed */
                 ActivityCompat.requestPermissions(activity, new String[]{PERMISSION}, PERMISSION_CODE);
                 return false; // Reading failed
             }
@@ -86,7 +86,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         return true; // Everything is fine, go on
     }
 
-    /* Function that creates parental directory for the expansion file
+    /* Function that creates parental directories for the expansion file
     *  Parental name is actually the name of the package
     */
     private void checkAndCreateDirs()
@@ -96,7 +96,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         /* If parental dir does not exist. Also checking for the "obb" directory */
         if (!packageFile.exists())
         {
-            /* Create the dir */
+            /* Create the dirs */
             packageFile.mkdirs();
         }
     }
@@ -155,7 +155,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         return false; // No, we didn't start downloading -> expansion is OK
     }
 
-    /* Function that is called when expansion if fully downloaded.
+    /* Function that is called when expansion downloading is complete.
      * It simply calls the same activity, popping current one from the stack.
      *
      * Because expansions are now downloaded, we won't end up here the second time
@@ -191,11 +191,12 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         launchThread.start();
     }
 
-    /* On each start we have to connect the downloading client */
+    /* On each onStart() we must connect the downloading client */
     public void start()
     {
         if (downloaderClientStub != null)
         {
+            /* connect the client */
             downloaderClientStub.connect(activity);
 
             /* UI update */
@@ -203,11 +204,12 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         }
     }
 
-    /* On each stop we have to disconnect the client */
+    /* On each onStop() we must disconnect the client */
     public void stop()
     {
         if (downloaderClientStub != null)
         {
+            /* disconnect the client */
             downloaderClientStub.disconnect(activity);
 
             /* UI update */
@@ -217,7 +219,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
 
     /* Function to track incoming clicks.
      * It handles "resume" "pause" states as well as
-     * cellular downloading
+     * cellular downloading buttons
      */
     @Override
     public void onClick(View v)
@@ -232,6 +234,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
                 remoteService.setDownloadFlags(IDownloaderService.FLAGS_DOWNLOAD_OVER_CELLULAR);
                 remoteService.requestContinueDownload();
             }
+            /* User chose to wait for the wi-fi */
             else if (v.getId() == expansionPage.getCellularCancelButtonId())
             {
                 cellularShown = false;
@@ -276,9 +279,9 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
     @Override
     public void onDownloadStateChanged(int stateId)
     {
-        /* 1) initially we don't want to show cellular message
-         * 2) we are running, not paused
-         * 3) we have time borders
+        /* 1) initially we don't want to show cellular connection message
+         * 2) we are downloading, not paused
+         * 3) we expect the downloading to end at some point of time
          */
         boolean showCellMessage = false;
         boolean paused = false;
@@ -338,7 +341,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         expansionPage.updateResumePauseButton(statePaused);
     }
 
-    /* Function is called when downloading is in progress.
+    /* Function is called when downloading changes its progress.
 
      * Note that we have to manually set 100% progress because
      * this callback function is not called when 100% is reached

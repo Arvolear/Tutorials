@@ -466,7 +466,7 @@ public class ExpansionPage
     }
 
     /* This function simply updates the downloading progress.
-     * It updates percentage, fraction, speed, remaining time and progress bar
+     * It updates percentage, fraction, speed, remaining time and the progress bar
      */
     public void updateProgress(DownloadProgressInfo progress)
     {

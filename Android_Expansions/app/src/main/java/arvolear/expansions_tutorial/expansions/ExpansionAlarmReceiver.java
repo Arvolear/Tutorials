@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import com.google.android.vending.expansion.downloader.DownloaderClientMarshaller;
 
-/* This class helps start downloading expansions */
+/* This class handles callbacks when downloading expansions */
 public class ExpansionAlarmReceiver extends BroadcastReceiver
 {
     @Override

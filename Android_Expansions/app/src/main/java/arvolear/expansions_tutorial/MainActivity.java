@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity
         TreeMap < Integer, Bitmap > tree = new TreeMap<>();
         AssetsLoader loader = new AssetsLoader(this, tree);
 
+        /* Loads an image from the expansion file */
         loader.loadBitmapFromAssets(0, "assets/textures/0.png", true);
 
         ImageView background = findViewById(R.id.fromExpansionsImage);
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity
         /* Important note. Here we set activity_main layout */
         setContentView(R.layout.activity_main);
 
-        /* Creating new expansions controller. It is a class which
+        /* Creating new expansions controller. It is the class which
          * fully embraces expansions
          */
         expansionController = new ExpansionController(this);
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity
             if (expansionController.checkPermission())
             {
                 /* Expansions are in place and permission is already granted,
-                 * nothing to download so launch an app
+                 * nothing to download so launch the app
                  */
                 launchTheApp();
             }
