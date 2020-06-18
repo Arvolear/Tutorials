@@ -138,7 +138,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
                 /* Trying to start downloading */
                 int startResult = DownloaderClientMarshaller.startDownloadServiceIfRequired(activity, pendingIntent, ExpansionDownloaderService.class);
 
-                /* if response code is not NO_DOWNLOAD_REQUIRED, we must download the expansion */
+                /* If response code is not NO_DOWNLOAD_REQUIRED, we must download the expansion */
                 if (startResult != DownloaderClientMarshaller.NO_DOWNLOAD_REQUIRED)
                 {
                     /* Prepare user interface */

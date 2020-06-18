@@ -1,6 +1,18 @@
+# Android Expansions Tutorial
+
+Checkout the tutorial here.
+
+### The provided code is a complete Android Studio 4.0 project
+
+### Result
+
+![result](./Android_Expansions/media/result.png?raw=true)
+
 # Skeletal Animation Tutorial
 
-### To compile and run the code without any problems you need:
+Checkout the tutorial [here](https://code-hub.org/tutorials/1).
+
+### To compile and run the code without any problems you will need:
 
 - Linux (the code was written under Linux)
 
@@ -13,6 +25,11 @@
 - [ASSIMP](http://assimp.sourceforge.net/main_downloads.html)
 
 - [SOIL](https://lonesock.net/soil.html)
+
+```
+make -j4
+./Demo
+```
 
 ### Result
 
