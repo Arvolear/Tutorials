@@ -88,7 +88,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
 
     /* This Function:
      * 1) creates parental directories for the expansion file
-     * 2) deletes unused expansion files in the parental directory
+     * 2) deletes unused files in the parental directory
      *
      * Parental name is actually the name of the package
      */
