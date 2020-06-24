@@ -57,10 +57,12 @@ public class MainActivity extends AppCompatActivity
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        /* PERMISSION_CODE is an arbitrary variable */
+        /* PERMISSION_CODE is an int that stands for "read external storage" permission.
+         * Yet it is an arbitrary variable
+         */
         if (requestCode == ExpansionController.PERMISSION_CODE)
         {
-            /* We have to launch the app if permission is granted */
+            /* We will launch the app if permission is granted */
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
                 launchTheApp();
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             Toast.makeText(this, "Unable to launch the game without permission", Toast.LENGTH_LONG).show();
-            finish();
+            finish(); // Close the app if permission is rejected
         }
     }
 

@@ -86,18 +86,44 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         return true; // Everything is fine, go on
     }
 
-    /* Function that creates parental directories for the expansion file
-    *  Parental name is actually the name of the package
-    */
-    private void checkAndCreateDirs()
+    /* This Function:
+     * 1) creates parental directories for the expansion file
+     * 2) deletes unused expansion files in the parental directory
+     *
+     * Parental name is actually the name of the package
+     */
+    private void checkExpansions()
     {
-        File packageFile = new File(activity.getObbDir() + activity.getPackageName());
+        File packageFile = activity.getObbDir();
 
         /* If parental dir does not exist. Also checking for the "obb" directory */
         if (!packageFile.exists())
         {
             /* Create the dirs */
             packageFile.mkdirs();
+        }
+        else
+        {
+            /* Listing files in parental dir */
+            File[] expansionFiles = packageFile.listFiles();
+
+            if (expansionFiles != null)
+            {
+                /* Getting current expansion file (you may also need to
+                 * check the patch one)
+                 */
+                String expName = Helpers.getExpansionAPKFileName(activity, EXP_IS_MAIN, EXP_VERSION);
+
+                /* Loop through files */
+                for (File file : expansionFiles)
+                {
+                    /* If name mismatches -> delete the file */
+                    if (!file.getName().equals(expName))
+                    {
+                        file.delete();
+                    }
+                }
+            }
         }
     }
 
@@ -106,8 +132,10 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
      */
     private boolean expansionFilesDelivered()
     {
-        /* Firstly check existence of expansion parental directory */
-        checkAndCreateDirs();
+        /* Firstly check existence of expansion parental directory +
+         * delete everything expect current expansion files there
+         */
+        checkExpansions();
 
         /* Get expansion name from its type and version */
         String expName = Helpers.getExpansionAPKFileName(activity, EXP_IS_MAIN, EXP_VERSION);

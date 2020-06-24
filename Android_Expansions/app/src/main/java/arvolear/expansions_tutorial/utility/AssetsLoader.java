@@ -65,16 +65,16 @@ public class AssetsLoader
                 {
                     if (loadFromLocalAssets)
                     {
-                        /* read directly from assets folder */
+                        /* Reading directly from assets folder */
                         stream = activity.getAssets().open(path);
                     }
                     else
                     {
-                        /* read from expansions file */
+                        /* Reading from expansions file */
                         stream = expansionFile.getInputStream(path);
                     }
 
-                    /* create bitmap from the stream of bytes */
+                    /* Creating bitmap from the stream of bytes */
                     Bitmap newBitmap = BitmapFactory.decodeStream(stream);
 
                     /* We don't want a recourse race :) */
