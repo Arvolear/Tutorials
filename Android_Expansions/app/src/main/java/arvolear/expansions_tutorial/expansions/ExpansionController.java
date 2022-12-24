@@ -133,7 +133,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
     private boolean expansionFilesDelivered()
     {
         /* Firstly check existence of expansion parental directory +
-         * delete everything expect current expansion files there
+         * delete everything except current expansion files there
          */
         checkExpansions();
 
@@ -144,7 +144,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         return Helpers.doesFileExist(activity, expName, EXP_SIZE, true);
     }
 
-    /* This function is called from MainActivity onCreate() method.
+    /* This function is called from the MainActivity onCreate() method.
      * It checks whether we need to start downloading the expansions or
      * the expansions are already here
      */
@@ -301,7 +301,7 @@ public class ExpansionController implements View.OnClickListener, IDownloaderCli
         remoteService.onClientUpdated(downloaderClientStub.getMessenger());
     }
 
-    /* This function is called when downloading process changes its state.
+    /* This function is called when the downloading process changes its state.
      * We can track the change and react respectively
      */
     @Override
